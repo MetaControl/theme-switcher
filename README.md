@@ -1,5 +1,5 @@
 # theme-switcher
-Quick Description: Wordpress Child-Theme Switcher for quick theme toggle via admin bar menu or shortcodes. Customisable: roles, themes, icon
+Quick Description: Wordpress Child-Theme Switcher for quick theme toggle via admin bar menu or shortcodes. Customisable: roles, themes, switcher icon, site identity
 
 
 ###
