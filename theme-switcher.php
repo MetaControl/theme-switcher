@@ -2,10 +2,10 @@
 
 /**
 * Plugin Name: Theme Switcher
-* Description: This plugin allows to switch between themes and child themes.
+* Description: This plugin allows to switch between themes and child themes. [with otpional site identity switch]
 * Author: Weavemaster
 * Author URI: http://teehautecouture.com
-* Version: 1.0
+* Version: 1.2
 */
 
 /**
