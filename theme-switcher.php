@@ -1,16 +1,16 @@
 <?php
 
 /**
-* Plugin Name: Theme Switcher
-* Description: This plugin allows to switch between themes and child themes. [with otpional site identity switch]
-* Author: Weavemaster
-* Author URI: http://teehautecouture.com
- * Version: 1.4
+ * Plugin Name: Theme Switcher
+ * Description: This plugin allows you to switch between themes and child themes with dynamic site identity and icon switching.
+ * Author: WeaveMaster
+ * Author URI: https://teehautecouture.com
+ * Version: 1.5
  */
-
 /**
  * ======== Customizable Variables Section ========
  * You can modify these variables to set your theme slugs, names, site titles, taglines, and favicon URLs.
+ * the favicons here are set up to be PNGs, but it should work with an .ico too.
  */
 
 // Allowed roles for theme switching
@@ -18,25 +18,26 @@ $theme_switcher_allowed_roles = array('administrator', 'editor'); // Add more ro
 
 // Theme data for switching and site identity
 $themes_identity = array(
-    'child-theme-1-slug' => array(
-        'name'            => 'Child Theme 1 Name',
-        'blogname'        => 'Site Title for Theme 1',
-        'blogdescription' => 'Tagline for Theme 1',
-        'favicon_url'     =>  content_url('/uploads/favicon-theme1.png'), // Favicon for Theme 1
-        'icon_url'        => 'your-icon-url-for-theme-1.png' // Icon when Child Theme 1 is active
+    'theme_slug_1' => array(  // Replace 'theme_slug_1' with the actual slug of the first theme
+        'name'            => 'Theme 1 Name', // The name of the first theme
+        'blogname'        => 'Site Title for Theme 1', // The site title to be used for this theme
+        'blogdescription' => 'Site Tagline for Theme 1', // The site tagline to be used for this theme
+        'favicon_url'     => content_url('/path/to/favicon-1.png'), // Path to the favicon for this theme
+        'icon_url'        => '/path/to/icon-1.png' // Icon URL for the admin bar or any icon use for this theme
     ),
-    'child-theme-2-slug' => array(
-        'name'            => 'Child Theme 2 Name',
-        'blogname'        => 'Site Title for Theme 2',
-        'blogdescription' => 'Tagline for Theme 2',
-        'favicon_url'     =>  content_url('/uploads/favicon-theme1.png'), // Favicon for Theme 2
-        'icon_url'        => 'your-icon-url-for-theme-2.png' // Icon when Child Theme 2 is active
+    'theme_slug_2' => array(  // Replace 'theme_slug_2' with the actual slug of the second theme
+        'name'            => 'Theme 2 Name', // The name of the second theme
+        'blogname'        => 'Site Title for Theme 2', // The site title to be used for this theme
+        'blogdescription' => 'Site Tagline for Theme 2', // The site tagline to be used for this theme
+        'favicon_url'     => content_url('/path/to/favicon-2.png'), // Path to the favicon for this theme
+        'icon_url'        => '/path/to/icon-2.png' // Icon URL for the admin bar or any icon use for this theme
     )
 );
 
 /**
  * ======== End of Customizable Variables Section ========
  */
+
 
 /**
  * Function to get allowed user roles that can see and use the theme switcher
@@ -172,14 +173,20 @@ function dynamic_site_identity() {
 
     // Loop through the theme identity array to find the current theme
     foreach ($themes_identity as $slug => $theme_data) {
-        if ($current_theme->get('Name') == $theme_data['name']) {
+        if ($current_theme->get('Name') === $theme_data['name']) {
             // Update title and tagline
-            add_filter('pre_option_blogname', function() use ($theme_data) { return $theme_data['blogname']; });
-            add_filter('pre_option_blogdescription', function() use ($theme_data) { return $theme_data['blogdescription']; });
+            add_filter('option_blogname', function() use ($theme_data) { return $theme_data['blogname']; });
+            add_filter('option_blogdescription', function() use ($theme_data) { return $theme_data['blogdescription']; });
             
-            // Output the favicon URL
-            echo '<link rel="icon" href="' . esc_url($theme_data['favicon_url']) . '" type="image/x-icon">';
+            // Override the favicon with the correct one for the active theme
+            add_filter('get_site_icon_url', function() use ($theme_data) {
+                return $theme_data['favicon_url'];
+            });
         }
     }
+}
+add_action('init', 'dynamic_site_identity');
+
+
 }
 add_action('wp_head', 'dynamic_site_identity');
