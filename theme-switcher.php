@@ -84,7 +84,8 @@ function theme_switcher_shortcode() {
 }
 add_shortcode('theme_switcher', 'theme_switcher_shortcode');
 
-// Simple theme switch icon between two child themes
+// Simple theme switch icon between two child themes 
+// Replace 'your-child-theme-2-slug' & 'your-child-theme-1-slug' with theme slugs
 function simple_theme_switcher_icon() {
     global $allowed_roles;
     if (!user_has_allowed_role($allowed_roles)) return '';
