@@ -22,14 +22,14 @@ $themes_identity = array(
         'name'            => 'Child Theme 1 Name',
         'blogname'        => 'Site Title for Theme 1',
         'blogdescription' => 'Tagline for Theme 1',
-        'favicon_url'     => get_stylesheet_directory_uri() . '/images/favicon-theme1.png', // Favicon for Theme 1
+        'favicon_url'     =>  content_url('/uploads/favicon-theme1.png'), // Favicon for Theme 1
         'icon_url'        => 'your-icon-url-for-theme-1.png' // Icon when Child Theme 1 is active
     ),
     'child-theme-2-slug' => array(
         'name'            => 'Child Theme 2 Name',
         'blogname'        => 'Site Title for Theme 2',
         'blogdescription' => 'Tagline for Theme 2',
-        'favicon_url'     => get_stylesheet_directory_uri() . '/images/favicon-theme2.png', // Favicon for Theme 2
+        'favicon_url'     =>  content_url('/uploads/favicon-theme1.png'), // Favicon for Theme 2
         'icon_url'        => 'your-icon-url-for-theme-2.png' // Icon when Child Theme 2 is active
     )
 );
@@ -167,23 +167,19 @@ add_shortcode('theme_switch_icon', 'simple_theme_switcher_icon');
  * Function to dynamically change the site title, tagline, and favicon based on the active theme
  */
 function dynamic_site_identity() {
-    $current_theme = wp_get_theme();
     global $themes_identity;
+    $current_theme = wp_get_theme();
 
-    foreach ($themes_identity as $theme_slug => $theme_data) {
-        if ($current_theme->get('Name') === $theme_data['name']) {
-            add_filter('pre_option_blogname', function() use ($theme_data) {
-                return $theme_data['blogname'];
-            });
-            add_filter('pre_option_blogdescription', function() use ($theme_data) {
-                return $theme_data['blogdescription'];
-            });
-
-            // Enqueue favicon
-            add_action('wp_enqueue_scripts', function() use ($theme_data) {
-                echo '<link rel="icon" href="' . esc_url($theme_data['favicon_url']) . '" type="image/x-icon">';
-            });
+    // Loop through the theme identity array to find the current theme
+    foreach ($themes_identity as $slug => $theme_data) {
+        if ($current_theme->get('Name') == $theme_data['name']) {
+            // Update title and tagline
+            add_filter('pre_option_blogname', function() use ($theme_data) { return $theme_data['blogname']; });
+            add_filter('pre_option_blogdescription', function() use ($theme_data) { return $theme_data['blogdescription']; });
+            
+            // Output the favicon URL
+            echo '<link rel="icon" href="' . esc_url($theme_data['favicon_url']) . '" type="image/x-icon">';
         }
     }
 }
-add_action('after_setup_theme', 'dynamic_site_identity');
+add_action('wp_head', 'dynamic_site_identity');
